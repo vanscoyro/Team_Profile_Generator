@@ -5,6 +5,11 @@ const inquirer = required("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+const outputDirectory = path.resolve(__dirname, "output")
+const outputPath = path.join(outputDirectory, "team.html");
+
+const render = require("./src/page-template.js");
+
 const teamMembers = [];
 const idArray = [];
 
@@ -85,31 +90,88 @@ function mainMenu() {
         inquirer.prompt([
             {
                 type : "input",
-                name : "inputName",
+                name : "engineerName",
                 message : "What is the engineer's name?"
             },
             {
                 type : "input",
-                name : "inputId",
+                name : "engineerId",
                 message : "What is the engineer's ID number?"
             },
             {
                 type : "input",
-                name : "inputEmail",
+                name : "engineerEmail",
                 message : "What is the engineer's email?"
+            },
+            {
+                type : "input",
+                name : "engineerGithub",
+                message : "What is the engineer's GitHub username?"
             }
-        ])
+        ]).then(choice =>{
+            
+            const engineer = new Engineer(choice.engineerName, choice.engineerId, choice.engineerEmail, choice.engineerGithub);
+            
+            //takes the user response and pushes the responses to the team members Array
+            teamMembers.push(engineer);
+
+            //also pushes the id number to the id Array
+            idArray.push(choice.engineerId);
+
+            //runs the createTeam function to prompt user 
+            createTeam();
+        })
 
 
     }
 
     function addIntern () {
 
+        inquirer.prompt([
+            {
+                type : "input",
+                name : "internName",
+                message : "What is the intern's name?"
+            },
+            {
+                type : "input",
+                name : "internId",
+                message : "What is the intern's ID number?"
+            },
+            {
+                type : "input",
+                name : "internEmail",
+                message : "What is the intern's email?"
+            },
+            {
+                type : "input",
+                name : "internSchool",
+                message : "What is the intern's school?"
+            }
+        ]).then(choice =>{
+            
+            const intern = new Intern(choice.internName, choice.internId, choice.internEmail, choice.internSchool);
+            
+            //takes the user response and pushes the responses to the team members Array
+            teamMembers.push(intern);
+
+            //also pushes the id number to the id Array
+            idArray.push(choice.internId);
+
+            //runs the createTeam function to prompt user 
+            createTeam();
+        })
+
     }
 
-    function buildTeam () {
-
-    }
+    function buildTeam() {
+        // Create the output directory if the output path doesn't exist
+        if (!fs.existsSync(outputDirectory)) {
+          fs.mkdirSync(outputDirectory)
+        }
+        fs.writeFileSync(outputPath, render(teamMembers), "utf-8");
+      }
+    
 
     assignManager();
 }
