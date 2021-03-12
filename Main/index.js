@@ -8,7 +8,7 @@ const fs = require("fs");
 const outputDirectory = path.resolve(__dirname, "output")
 const outputPath = path.join(outputDirectory, "team.html");
 
-const render = require("./src/page-template.js");
+const render = require("./template/index-template.js");
 
 const teamMembers = [];
 const idArray = [];
